@@ -1,81 +1,66 @@
- import React, { Component } from 'react'
-import css from './ContactForm.module.css'
+import { useState } from 'react';
+import css from './ContactForm.module.css';
+
+const ContactForm = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
 
- export class ContactForm extends Component {
-   state = {
-      name: '',
-      number: '',
-    }  
-    
-    
-    handleInputChange = (e) => {
-      const {name, value} = e.currentTarget;
-      this.setState({[name]: value});
-   };
+  const handleChange = e => {
+    const { name, value } = e.target;
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+      default:
+        return;
+    }
+  };
 
-   handleSubmit = e => {
-   e.preventDefault();
+  const handleSubmit = e => {
+    e.preventDefault();
+    onSubmit(name, number);
+    setNumber('');
+    setName('');
+  };
 
-   const { name, number } = this.state;
- 
+  // const reset = () => {
+  //          setName('');
+  //       }
 
-   this.props.onSubmit(name, number );
+  return (
+    <form onSubmit={handleSubmit} className={css.formBloc}>
+      <label className={css.inputBloc}>
+        Name
+        <input
+          type="text"
+          name="name"
+          placeholder="Rosie Simpson"
+          value={name}
+          onChange={handleChange}
+          pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          required
+        />
+      </label>
+      <label className={css.inputBloc}>
+        Numer
+        <input
+          type="tel"
+          name="number"
+          placeholder="459-12-56"
+          value={number}
+          onChange={handleChange}
+          pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
+          required
+        />
+      </label>
 
-   this.setState({ name: '', number: '' });
+      <button type="submit">Add Contact</button>
+    </form>
+  );
+};
 
-   }
-
-   // handleAddContact = () => {
-   //    const { name, number } = this.state;
-   //    const {contacts}= this.props;
-
-   //    const isExist = contacts.some(
-   //       (contact) => contact.name.toLowerCase() === name.trim().toLowerCase()
-   //    );
-   //    if (isExist) {
-   //       alert(`${name} is already in contacts.`)
-   //       return;
-   //             }
-
-   //    this.props.onAddContact(name, number);
-   //    this.setState({ name: '', number: '' });
-   //  };
-       
-
-   reset = () => {
-            this.setState({name: ''})
-         }
-
-   render() {
-      const {name, number} = this.state;
-           return (
-            
-             
-               <form onSubmit={this.handleSubmit} className={css.formBloc}>
-                  <label className={css.inputBloc}>
-                  Name 
-                  <input type="text" name="name" placeholder='Rosie Simpson' value={name} onChange={this.handleInputChange} pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$" required/>
-                  </label>
-                  <label className={css.inputBloc}>
-                     Numer
-                     <input type="tel" name="number" placeholder='459-12-56' value={number} onChange={this.handleInputChange} pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}" required/>
-                  </label>
-                 
-                  
-                  <button type="submit" >
-                     Add Contact
-                  </button>
-               </form>
-           
-
-
-      )
-         }
-       }
-       
-       
-             
-           
-       
-       export default ContactForm
+export default ContactForm;
